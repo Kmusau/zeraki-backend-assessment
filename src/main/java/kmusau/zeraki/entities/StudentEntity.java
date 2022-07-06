@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -19,8 +21,9 @@ public class StudentEntity {
 	@Column(name = "name")
 	private String name;
 	
-	@Column(name = "course")
-	private String course; 
+	@ManyToOne
+	@JoinColumn(name = "course_id")
+	private CourseEntity course; 
 	
 	@Column(name = "institution")
 	private String institution;
@@ -28,7 +31,7 @@ public class StudentEntity {
 	@Column(name = "regnumber")
 	private String RegNumber;
 
-	public StudentEntity(int studentID, String name, String course, String institution, String regNumber) {
+	public StudentEntity(int studentID, String name, CourseEntity course, String institution, String regNumber) {
 		super();
 		this.studentID = studentID;
 		this.name = name;
@@ -37,9 +40,11 @@ public class StudentEntity {
 		this.RegNumber = regNumber;
 	}
 
+
 	public StudentEntity() {
 		super();
 	}
+
 
 	public int getStudentID() {
 		return studentID;
@@ -57,11 +62,11 @@ public class StudentEntity {
 		this.name = name;
 	}
 
-	public String getCourse() {
+	public CourseEntity getCourse() {
 		return course;
 	}
 
-	public void setCourse(String course) {
+	public void setCourse(CourseEntity course) {
 		this.course = course;
 	}
 

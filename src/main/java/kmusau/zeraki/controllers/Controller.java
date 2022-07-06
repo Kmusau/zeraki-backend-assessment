@@ -16,7 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import kmusau.zeraki.entities.CourseEntity;
+import kmusau.zeraki.entities.InstitutionEntity;
 import kmusau.zeraki.entities.StudentEntity;
+import kmusau.zeraki.repositories.CourseRepository;
+import kmusau.zeraki.repositories.InstitutionRepository;
 import kmusau.zeraki.services.StudentService;
 
 @RestController
@@ -25,12 +29,21 @@ public class Controller {
 	@Autowired
 	StudentService studentService;
 	
+	@Autowired
+	CourseRepository courserepo;
+	
+	@Autowired
+	InstitutionRepository institutionrepo;
+	
 
 	@GetMapping("/v1/test")
 	public String welcome() {
 		return "Getting started ";
 	}
 	
+	//List all students in each institution, showing 10 at a time. 
+	//Sorting by course
+	//FIXME: add another param - filter by course
 	@GetMapping("/students/fetch")
 	public List<StudentEntity> getAllStudents(@RequestParam(defaultValue = "0") int pageNo, @RequestParam String institution) {
 		return studentService.getAllStudents(pageNo, institution);
@@ -80,5 +93,18 @@ public class Controller {
 	@PutMapping("/student/changeinstitution/{id}")
 	public StudentEntity editStudentInstitutionAndCourse(@RequestBody StudentEntity student, @PathVariable int id) {
 		return studentService.editStudent(student, id);
+	}
+	
+	
+	@GetMapping("/courses/fetch")
+	public List<CourseEntity> getAllCourses() {
+		
+		return courserepo.findAll();
+	}
+	
+	@GetMapping("/institutions/fetch")
+	public List<InstitutionEntity> getAllInstitutions() {
+		
+		return institutionrepo.findAll();
 	}
 }
