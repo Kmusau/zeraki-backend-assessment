@@ -1,7 +1,9 @@
 package kmusau.zeraki.entities;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,7 +23,7 @@ public class StudentEntity {
 	@Column(name = "name")
 	private String name;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "course_id")
 	private CourseEntity course; 
 	
@@ -84,7 +86,12 @@ public class StudentEntity {
 
 	public void setRegNumber(String regNumber) {
 		RegNumber = regNumber;
-	}  
+	}
+
+
+//	public void assignCourse(CourseEntity course) {
+//		this.course = course;
+//	}  
 	
 	
 }

@@ -21,6 +21,9 @@ import kmusau.zeraki.entities.InstitutionEntity;
 import kmusau.zeraki.entities.StudentEntity;
 import kmusau.zeraki.repositories.CourseRepository;
 import kmusau.zeraki.repositories.InstitutionRepository;
+import kmusau.zeraki.repositories.StudentRepository;
+import kmusau.zeraki.services.CourseService;
+import kmusau.zeraki.services.InstitutionService;
 import kmusau.zeraki.services.StudentService;
 
 @RestController
@@ -30,10 +33,16 @@ public class Controller {
 	StudentService studentService;
 	
 	@Autowired
-	CourseRepository courserepo;
+	CourseService courseService;
+	
+	@Autowired
+	InstitutionService institutionService;
 	
 	@Autowired
 	InstitutionRepository institutionrepo;
+	
+	@Autowired
+	StudentRepository studentrepo;
 	
 
 	@GetMapping("/v1/test")
@@ -54,11 +63,20 @@ public class Controller {
 		return studentService.getSingleStudent(id);
 	}
 	
-	//Add a student and assign them a course.
+	//Add a student
 	@PostMapping("/student/add")
 	public StudentEntity addStudent(@RequestBody StudentEntity student) {
 		studentService.addStudent(student);
 		return student;
+	}
+	
+	//assign student a course
+	@PutMapping("/student/{studentID}/course/{courseID}")
+	public StudentEntity assignStudentACourse (@PathVariable int studentID, @PathVariable int courseID) {
+		StudentEntity student = studentService.getSingleStudent(studentID).get();
+		CourseEntity course = courseService.getSingleCourse(courseID);
+		student.setCourse(course);
+		return studentrepo.save(student);
 	}
 	
 	//Delete a particular student.
@@ -98,13 +116,45 @@ public class Controller {
 	
 	@GetMapping("/courses/fetch")
 	public List<CourseEntity> getAllCourses() {
-		
-		return courserepo.findAll();
+		return courseService.getAllCourses();
 	}
 	
+	@PostMapping("/course/create")
+	public CourseEntity addCourse(@RequestBody CourseEntity course) {
+		courseService.addCourse(course);
+		return course;
+	}
+	
+	//List all institutions. -- sort the list of institutions by name
 	@GetMapping("/institutions/fetch")
 	public List<InstitutionEntity> getAllInstitutions() {
-		
-		return institutionrepo.findAll();
+		return institutionService.getAllInstitutions();
+	}
+	
+	//Add a new institution
+	@PostMapping("/institution/create")
+	public InstitutionEntity addInstitution(@RequestBody InstitutionEntity institution) {
+		return institutionService.addInstitution(institution);
+	}
+	
+	//Delete institution
+	@DeleteMapping("/institution/delete/{id}")
+	public String deleteInstitution(@PathVariable int id) {
+		return institutionService.deleteInstitution(id);
+	}
+	
+	//Add course to an institution
+	@PutMapping("/institution/{institutionID}/course/{courseID}")
+	public InstitutionEntity addCourseToInstitution (@PathVariable int institutionID, @PathVariable int courseID) {
+		InstitutionEntity institution = institutionService.getSingleInstitution(institutionID);
+		CourseEntity course = courseService.getSingleCourse(courseID);
+		institution.addCourseToInstitution(course);
+		return institutionrepo.save(institution);
+	}
+	
+	//Edit the name of a student.
+	@PutMapping("/institution/editname/{id}")
+	public InstitutionEntity editInstitutionName(@RequestBody InstitutionEntity institution, @PathVariable int id) {
+		return institutionService.editInstitution(institution, id);
 	}
 }

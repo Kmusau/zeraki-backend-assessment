@@ -8,9 +8,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "courses")
@@ -24,11 +28,12 @@ public class CourseEntity {
 	@Column(name = "course_name")
 	private String courseName;
 	
-	//FIXME: mapped by
-	@OneToMany
+	@JsonIgnore
+	@OneToMany(mappedBy = "course")
 	private List<StudentEntity> students;
 	
-	@ManyToMany		
+	@JsonIgnore
+	@ManyToMany(mappedBy = "courses")	
 	private List<InstitutionEntity> institutions;
 
 	public CourseEntity(int courseID, String courseName, List<StudentEntity> students, List<InstitutionEntity> institutions) {
@@ -75,7 +80,6 @@ public class CourseEntity {
 
 	public void setInstitutions(List<InstitutionEntity> institutions) {
 		this.institutions = institutions;
-	}
-//	
+	}	
 	
 }

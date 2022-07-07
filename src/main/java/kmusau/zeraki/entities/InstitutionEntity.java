@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
@@ -19,10 +21,11 @@ public class InstitutionEntity {
 	@Column(name = "institutionID")
 	private int institutionID;
 	
-	@Column(name = "institution_name")
+	@Column(name = "institution_name", unique=true)
 	private String institutionName;
 	
-	@ManyToMany(mappedBy = "institutions")
+	@ManyToMany
+	@JoinTable(name = "institutions_courses", joinColumns = @JoinColumn(name = "institutionid"), inverseJoinColumns = @JoinColumn(name = "courseid"))
 	private List<CourseEntity> courses;
 	
 	@Column(name = "location")
@@ -72,4 +75,7 @@ public class InstitutionEntity {
 		this.location = location;
 	}
 	
+	public void addCourseToInstitution(CourseEntity course) {
+		courses.add(course);
+	}
 }
