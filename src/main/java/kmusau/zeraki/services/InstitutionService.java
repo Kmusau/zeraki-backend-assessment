@@ -23,7 +23,10 @@ public class InstitutionService {
 		return institutionrepo.findById(id).get();
 	}
 	
-	public List<InstitutionEntity> getAllInstitutions() {
+	public List<InstitutionEntity> getAllInstitutions(String keyword) {
+		if (keyword != null) {
+            return institutionrepo.search(keyword);
+        }
 		return institutionrepo.findAll(Sort.by(Sort.Direction.ASC, "institutionName"));
 	}
 	

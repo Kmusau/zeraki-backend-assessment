@@ -25,7 +25,7 @@ public class CourseEntity {
 	@Column(name = "courseID")
 	private int courseID;
 	
-	@Column(name = "course_name")
+	@Column(name = "course_name", unique = true)
 	private String courseName;
 	
 	@JsonIgnore

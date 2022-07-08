@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import kmusau.zeraki.entities.CourseEntity;
 import kmusau.zeraki.entities.InstitutionEntity;
 import kmusau.zeraki.entities.StudentEntity;
-import kmusau.zeraki.repositories.CourseRepository;
 import kmusau.zeraki.repositories.InstitutionRepository;
 import kmusau.zeraki.repositories.StudentRepository;
 import kmusau.zeraki.services.CourseService;
@@ -123,21 +123,54 @@ public class Controller {
 	}
 	
 	
+	//list of courses - filter the courses by searching
 	@GetMapping("/courses/fetch")
-	public List<CourseEntity> getAllCourses() {
-		return courseService.getAllCourses();
+	public List<CourseEntity> getAllCourses(@Param("keyword") String keyword) {
+		return courseService.getAllCourses(keyword);
 	}
 	
+	//Create a course
 	@PostMapping("/course/create")
 	public CourseEntity addCourse(@RequestBody CourseEntity course) {
 		courseService.addCourse(course);
 		return course;
 	}
 	
+	//Edit the name of a course.
+	@PutMapping("/course/editname/{id}")
+		public CourseEntity editCourseName(@RequestBody CourseEntity course, @PathVariable int id) {
+		return courseService.editCourse(course, id);
+	}
+	
+	//Delete course
+	@DeleteMapping("/course/delete/{id}")
+	public String deleteCourse(@PathVariable int id) {
+		try {
+			return courseService.deleteCourse(id);
+		} catch(NoSuchElementException e) {
+			return "No such element found";
+		}
+	}
+	
+	//Add course to an institution
+	@PutMapping("/institution/{institutionID}/course/{courseID}")
+	public String addCourseToInstitution (@PathVariable int institutionID, @PathVariable int courseID) {
+		InstitutionEntity institution = institutionService.getSingleInstitution(institutionID);
+		CourseEntity course = courseService.getSingleCourse(courseID);
+		if(institution.getCourses().contains(course)) {
+			return "The institution already offers that course";
+		} else {
+			institution.addCourseToInstitution(course);
+			institutionrepo.save(institution);
+			return "Updated Successfully";
+		}
+		
+	}
+	
 	//List all institutions. -- sort the list of institutions by name
 	@GetMapping("/institutions/fetch")
-	public List<InstitutionEntity> getAllInstitutions() {
-		return institutionService.getAllInstitutions();
+	public List<InstitutionEntity> getAllInstitutions(@Param("keyword") String keyword) {
+		return institutionService.getAllInstitutions(keyword);
 	}
 	
 	//Add a new institution
@@ -156,14 +189,6 @@ public class Controller {
 		}
 	}
 	
-	//Add course to an institution
-	@PutMapping("/institution/{institutionID}/course/{courseID}")
-	public InstitutionEntity addCourseToInstitution (@PathVariable int institutionID, @PathVariable int courseID) {
-		InstitutionEntity institution = institutionService.getSingleInstitution(institutionID);
-		CourseEntity course = courseService.getSingleCourse(courseID);
-		institution.addCourseToInstitution(course);
-		return institutionrepo.save(institution);
-	}
 	
 	//Edit the name of an institution.
 	@PutMapping("/institution/editname/{id}")
