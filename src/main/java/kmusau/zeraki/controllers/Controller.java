@@ -58,7 +58,6 @@ public class Controller {
 	
 	//List all students in each institution, showing 10 at a time. 
 	//Sorting by course
-	//FIXME: add another param - filter by course
 	@GetMapping("/students/fetch")
 	public List<StudentEntity> getAllStudents(@RequestParam(defaultValue = "0") int pageNo, @RequestParam String institution) {
 		return studentService.getAllStudents(pageNo, institution);
