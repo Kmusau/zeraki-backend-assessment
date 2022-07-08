@@ -47,14 +47,14 @@ public class InstitutionService {
 	public InstitutionEntity editInstitution(InstitutionEntity institution, int id) {
 		InstitutionEntity inst = institutionrepo.findById(id).get();
 		
-		if (Objects.nonNull(institution.getInstitutionID())) {
-			inst.setInstitutionID(institution.getInstitutionID());
-	        }
 		if (Objects.nonNull(institution.getInstitutionName())) {
 			inst.setInstitutionName(institution.getInstitutionName());
         }
 		if (Objects.nonNull(institution.getLocation())) {
 			inst.setLocation(institution.getLocation());
+        }
+		if (Objects.nonNull(institution.getCourses())) {
+			inst.setCourses(institution.getCourses());
         }
 
 		InstitutionEntity updatedInstitution = institutionrepo.save(inst);

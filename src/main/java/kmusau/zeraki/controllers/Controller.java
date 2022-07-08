@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,6 +51,11 @@ public class Controller {
 		return "Getting started ";
 	}
 	
+	@GetMapping("/allstudents")
+	public List<StudentEntity> allStudents() {
+		return studentrepo.findAll();
+	}
+	
 	//List all students in each institution, showing 10 at a time. 
 	//Sorting by course
 	//FIXME: add another param - filter by course
@@ -85,7 +91,7 @@ public class Controller {
 		try {
 			studentService.deleteStudent(id);
 			return "Deleted successfully";
-		} catch(NoSuchElementException e) {
+		} catch(EmptyResultDataAccessException e) {
 			return "No such element found";
 		}
 	}
@@ -102,9 +108,12 @@ public class Controller {
 	}
 	
 	//Change the course the student is doing within the same institution.
-	@PutMapping("/student/changecourse/{id}")
-	public StudentEntity editStudentCourse(@RequestBody StudentEntity student, @PathVariable int id) {
-		return studentService.editStudent(student, id);
+	@PutMapping("/student/{studentID}/changecourse/{courseID}")
+	public StudentEntity editStudentCourse(@PathVariable int studentID, @PathVariable int courseID) {
+		StudentEntity student = studentService.getSingleStudent(studentID).get();
+		CourseEntity course = courseService.getSingleCourse(courseID);
+		student.setCourse(course);
+		return studentrepo.save(student);
 	}
 	
 	//Transfer the student to another university and assign them a course.
@@ -140,7 +149,11 @@ public class Controller {
 	//Delete institution
 	@DeleteMapping("/institution/delete/{id}")
 	public String deleteInstitution(@PathVariable int id) {
-		return institutionService.deleteInstitution(id);
+		try {
+			return institutionService.deleteInstitution(id);
+		} catch(NoSuchElementException e) {
+			return "No such element found";
+		}
 	}
 	
 	//Add course to an institution
@@ -152,9 +165,10 @@ public class Controller {
 		return institutionrepo.save(institution);
 	}
 	
-	//Edit the name of a student.
+	//Edit the name of an institution.
 	@PutMapping("/institution/editname/{id}")
 	public InstitutionEntity editInstitutionName(@RequestBody InstitutionEntity institution, @PathVariable int id) {
 		return institutionService.editInstitution(institution, id);
 	}
+	
 }
