@@ -8,7 +8,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import kmusau.zeraki.entities.CourseEntity;
-import kmusau.zeraki.entities.InstitutionEntity;
 import kmusau.zeraki.entities.StudentEntity;
 import kmusau.zeraki.repositories.CourseRepository;
 
