@@ -1,13 +1,7 @@
--- DROP TABLE IF EXISTS hibernate_sequence;
-
--- CREATE TABLE hibernate_sequence (
---   next_val bigint DEFAULT NULL
--- );
-
 DROP TABLE IF EXISTS courses;
 
 CREATE TABLE courses (
-  courseid int NOT NULL,
+  courseid int NOT NULL AUTO_INCREMENT,
   course_name varchar(255) DEFAULT NULL,
   PRIMARY KEY (courseid)
 ); 
@@ -15,7 +9,7 @@ CREATE TABLE courses (
 DROP TABLE IF EXISTS students;
 
 CREATE TABLE students (
-  studentid int NOT NULL,
+  studentid int NOT NULL AUTO_INCREMENT,
   regnumber varchar(255) DEFAULT NULL,
   institution varchar(255) DEFAULT NULL,
   name varchar(255) DEFAULT NULL,
@@ -28,7 +22,7 @@ CREATE TABLE students (
 DROP TABLE IF EXISTS institutions;
 
 CREATE TABLE institutions (
-  institutionid int NOT NULL,
+  institutionid int NOT NULL AUTO_INCREMENT,
   institution_name varchar(255) DEFAULT NULL,
   location varchar(255) DEFAULT NULL,
   PRIMARY KEY (institutionid),
