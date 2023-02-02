@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import kmusau.zeraki.entities.CourseEntity;
 import kmusau.zeraki.entities.InstitutionEntity;
-import kmusau.zeraki.entities.StudentEntity;
 import kmusau.zeraki.repositories.InstitutionRepository;
 
 @Service
